@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CinemaDao">
+
+    <resultMap id="BaseResultMap" type="com.entity.Cinema">
+        <!--@Table cinema-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="NUMERIC"/>
+        <result property="notice" column="notice" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="distance" column="distance" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, name, city, price, notice, address, distance
+        from cinema
+        where id = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, name, city, price, notice, address, distance
+        from film.cinema
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="notice != null and notice != ''">
+                and notice = #{notice}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="distance != null">
+                and distance = #{distance}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from cinema
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="notice != null and notice != ''">
+                and notice = #{notice}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="distance != null">
+                and distance = #{distance}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into cinema(name, city, price, notice, address, distance)
+        values (#{name}, #{city}, #{price}, #{notice}, #{address}, #{distance})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into cinema(name, city, price, notice, address, distance)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.name}, #{entity.city}, #{entity.price}, #{entity.notice}, #{entity.address}, #{entity.distance})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into cinema(name, city, price, notice, address, distance)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.city}, #{entity.price}, #{entity.notice}, #{entity.address}, #{entity.distance})
+        </foreach>
+        on duplicate key update
+        name = values(name),
+        city = values(city),
+        price = values(price),
+        notice = values(notice),
+        address = values(address),
+        distance = values(distance)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cinema
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="notice != null and notice != ''">
+                notice = #{notice},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="distance != null">
+                distance = #{distance},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cinema where id = #{id}
+    </delete>
+
+</mapper>
+
